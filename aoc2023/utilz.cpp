@@ -2,65 +2,50 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <curl/curl.h>
-
-using namespace std;
-
-
-
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <curl/curl.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <map>
+#include <vector>
+#include <string>
+#include <map>
 
-using namespace std;
 
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::string *s) {
-    size_t newLength = size * nmemb;
-    try {
-        s->append((char*)contents, newLength);
-    }    catch(std::bad_alloc &e) {
-        // handle memory problem
-        return 0;
-    }
-    return newLength;
-}
 
-int read_website_URL(const string& site_url) {
-    CURL *curl;
-    CURLcode res;
-    string readBuffer;
+// Define a macro to read and print the contents of a text file
+std::vector<std::string> read_txt_file(const std::string& file_name) {
+    std::vector<std::string> lines;
 
-    curl = curl_easy_init();
-    if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, site_url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+    // Open the file
+    std::ifstream file(file_name);
 
-        res = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
+    // Check if the file is successfully opened
+    if (file.is_open()) {
+        std::string line;
 
-        if (res != CURLE_OK) {
-            cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << endl;
-            return 1; // Indicates failure
+        // Read each line from the file and store it in the vector
+        while (getline(file, line)) {
+            lines.push_back(line);
         }
 
-        cout << readBuffer << endl; // Print the contents of the website
+        // Close the file
+        file.close();
     } else {
-        cerr << "Failed to initialize CURL." << endl;
-        return 1; // Indicates failure
+        // If the file cannot be opened, print an error message
+        std::cout << "Unable to open file: " << file_name << std::endl;
     }
-    return 0; // Indicates success
+
+    // Return the vector containing the lines
+    return lines;
 }
 
-int main() {
-    string url = "...";
-    int result = read_website_URL(url);
-
-    if (result != 0) {
-        cerr << "Failed to read from the website" << endl;
-        return 1;
-    }
-
+int main(int argc, char const *argv[])
+{
+    /* code */
     return 0;
 }
